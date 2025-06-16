@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rezervasyon Kontrol Sistemi</title>
+  <title>Mobil OCR & Excel Karşılaştırma</title>
   <style>
     body {
       background: #0d0d1a;
@@ -77,7 +77,7 @@
   </style>
 </head>
 <body>
-  <h1>📷 Rezervasyon Kontrol Sistemi</h1>
+  <h1>📷 Mobil OCR & Excel Karşılaştırma</h1>
   <div class="card">
     <label class="file-label" for="pdfInput">📄 PDF Yükle</label>
     <button class="btn" onclick="document.getElementById('pdfInput').click()">PDF Seç</button>
@@ -108,12 +108,27 @@
     <strong>📋 Sonuçlar:</strong>
     <div id="results" class="results">Henüz bir karşılaştırma yapılmadı.</div>
   </div>
+
   <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
   <script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
   <script src="https://unpkg.com/tesseract.js@v4.0.2/dist/tesseract.min.js"></script>
   <script>
     const pdfjsLib = window['pdfjs-dist/build/pdf'];
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+
+    const knownNames = ["Ali", "Ahmet", "Mehmet", "Ayşe", "Fatma", "Zeynep", "Mustafa", "Can", "Mert", "Emre", "Hüseyin", "Elif", "Yusuf", "Hasan", "Halil", "Cem", "Ömer", "Kerem", "Sinem", "Burak"];
+
+    function findLikelyName(text) {
+      const kelimeler = text.split(/\s+/);
+      for (let i = 0; i < kelimeler.length - 1; i++) {
+        const k1 = kelimeler[i];
+        const k2 = kelimeler[i + 1];
+        if (knownNames.includes(k1) && /^[A-ZÇĞİÖŞÜ][a-zçğıöşü]+$/.test(k2)) {
+          return `${k1} ${k2}`;
+        }
+      }
+      return '';
+    }
 
     async function extractImageText(file, lang) {
       const img = new Image();
@@ -155,7 +170,7 @@
 
     function extractFieldsFromText(text) {
       const tokens = text.split(/\s+/);
-      let isim = '', crs = '', giris = '', cikis = '';
+      let crs = '', giris = '', cikis = '';
       const names = [], dates = [], codes = [];
 
       for (let i = 0; i < tokens.length; i++) {
@@ -164,9 +179,9 @@
           const next = tokens[i+1] || '';
           if (/\d{1,2}:\d{2}/.test(next)) { dates.push(`${t} ${next}`); i++; } else { dates.push(t); }
         } else if (/^[A-Z]{2,}\d+/.test(t)) codes.push(t);
-        else if (/^[A-ZÇĞİÖŞÜ][a-zçğıöşü]+$/.test(t)) names.push(t);
       }
-      if (names.length >= 2) isim = names.slice(0,2).join(' ');
+
+      const isim = findLikelyName(text);
       if (dates.length >= 1) giris = dates[0];
       if (dates.length >= 2) cikis = dates[1];
       if (codes.length >= 1) crs = codes[0];
@@ -202,7 +217,7 @@
       const lang = document.getElementById("ocrLang").value;
 
       if (!excelFile || (!imageFile && !pdfFiles.length)) {
-        alert("B-up taraması yapın veya pdf formatı ile yükleyin.");
+        alert("Lütfen kamera görüntüsü veya PDF ve Excel dosyası yükleyin.");
         return;
       }
 
