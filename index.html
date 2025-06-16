@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mobil OCR & Excel Karşılaştırma</title>
+  <title>NİGHT AUİDİTÖR</title>
   <style>
     body { background: #121212; color: white; font-family: sans-serif; padding: 20px; }
     h1 { text-align: center; font-size: 1.4rem; color: #00ffcc; }
     input, select, button {
-      width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 10px;
+      width: 100%; padding: 10px; margin: 10px 0; border: none; border-radius: 10px;
       font-size: 1rem; box-sizing: border-box;
     }
     button { background: #00ffcc; color: #000; font-weight: bold; cursor: pointer; }
@@ -26,7 +26,7 @@
   </style>
 </head>
 <body>
-  <h1>Mobil OCR & Excel Karşılaştırma</h1>
+  <h1>NİGHT AUİDİTÖR</h1>
   <div class="card">
     <input type="file" id="pdfInput" accept="application/pdf" multiple>
     <input type="file" id="imageInput" accept="image/*" capture="environment">
@@ -36,7 +36,7 @@
       <option value="eng">İngilizce</option>
       <option value="deu">Almanca</option>
     </select>
-    <button onclick="handleApply()">OCR ve Karşılaştır</button>
+    <button onclick="handleApply()">Kontrol Et</button>
   </div>
   <div class="card">
     <div><strong>OCR Çıktısı:</strong></div>
@@ -141,7 +141,7 @@
       const lang = document.getElementById("ocrLang").value;
 
       if (!excelFile || (!imageFile && !pdfFiles.length)) {
-        alert("Lütfen kamera görüntüsü veya PDF ve Excel dosyası yükleyin.");
+        alert("B-up taraması yapın veya pdf formatı ile yükleyin.");
         return;
       }
 
